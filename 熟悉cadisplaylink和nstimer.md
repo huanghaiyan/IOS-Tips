@@ -60,17 +60,18 @@ NSTimer的使用范围要广泛的多，各种需要单次或者循环定时处�
   		
   	 1.创建方法
         
-      NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(action:) userInfo:nil repeats:NO];
+      		NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(action:) userInfo:nil repeats:NO];
       
-	  TimerInterval : 执行之前等待的时间。比如设置成1.0，就代表1秒后执行方法
-	  target : 需要执行方法的对象。
-	  selector : 需要执行的方法
-	  repeats : 是否需要循环
+	  		TimerInterval : 执行之前等待的时间。比如设置成1.0，就代表1秒后执行方法
+	  		target : 需要执行方法的对象。
+	  		selector : 需要执行的方法
+	  		repeats : 是否需要循环
 
    2.释放方法
  
-      [timer invalidate];
-	  注意 :调用创建方法后，target对象的计数器会加1，直到执行完毕，自动减1。如果是循环执行的话，就必须手动关闭，否则可以不执行释放方法。
+      		[timer invalidate];
+      		
+	 		 注意 :调用创建方法后，target对象的计数器会加1，直到执行完毕，自动减1。如果是循环执行的话，就必须手动关闭，否则可以不执行释放方法。
 
    3.特性
 
