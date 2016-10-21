@@ -39,3 +39,6 @@
 
 5. 现在可以放心的删除了，这样操作就完成了，你可以重新进入管理svn的工具打开目录，进行clean了，问题解决了，是不是很方便呢？
 
+[博客网站地址：http://v2it.win/ios/svnprevious-operation-has-not-finished-run-cleanup-if-it-was-interrupted/](http://v2it.win/ios/svnprevious-operation-has-not-finished-run-cleanup-if-it-was-interrupted/)
+
+
