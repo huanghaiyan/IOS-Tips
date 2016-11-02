@@ -110,6 +110,12 @@
 		单例模式
 
 		1.定义：确保一个类只有一个实例，而且自行实例化并向整个系统提供这个实例。
+		
+		什么是单例
+		其实就是C中得全局变量
+		在整个程序生命周期内，该对象只有一份存在内存中
+		可以在多个对象之间共享数据
+		
 		单例模式的优点：
 		* 在内存中只有一个对象，节省内存空间。
 		* 避免频繁的创建销毁对象，可以提高性能。
@@ -169,8 +175,20 @@
 
 16. 推送原理？
 
+		推送原理
+		1、首先是应用程序注册消息推送。
+		2、 iOS跟APNS Server要deviceToken。应用程序接受deviceToken。
+		3、应用程序将deviceToken发送给PUSH服务端程序。
+		4、 服务端程序向APNS服务发送消息。
+    	5、APNS服务将消息发送给iPhone应用程序。
+	参考文章： [ios推送消息的基本原理](http://blog.csdn.net/dongdongdongjl/article/details/8452211)
 17. SDWebImage内部如何实现的，图片如何存储的？
+	
+	
+	其他文章[一行行看SDWebImage源码（一）](http://www.jianshu.com/p/82c7f2865c92)
 
+	[一行行看SDWebImage源码 （二）](http://www.jianshu.com/p/67f8daa47a10)
+	
 18. 内存问题
 		
 		NSString *name = [[NSString alloc]initWithString:@"张三"];
@@ -219,14 +237,89 @@
 		> [self performSelector: withObject: afterDelay:];
 		
 		> [NSTimer scheduledTimerWithTimeInterval: target: selector: userInfo: repeats:];
+		
+		GCD
+		
+		main dispatch queue
+		全局性的serial queue，所有和UI操作相关的任务都应该放到这个queue里面，在主线程中执行
+		宏dispatch_get_main_queue()，同一时间只能执行一个任务
+		global dispatch queue
+		可以并发的执行多个任务，但是执行完成的顺序是随机的。一般后台执行的任务放到这个queue里面。
+		函数dispatch_get_global_queue(0，0)//0默认优先级
 
+		提交任务到dispatch queue
+		1.同步提交
+		void dispatch_sync(dispatch_queue_t queue,dispatch_block_t block);
+		2.异步提交
+		void dispatch_async(dispatch_queue_t queue,dispatch_block_t block);
+		我们最常用的是异步提交
+
+		典型应用线程处理
+		为了避免界面在处理耗时的操作时卡死，比如读取网络数据，I/O,数据库读写等，我们会在另一个线程中处理这些操作，然后通知主线程更新界面。
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0),^{
+		//耗时的操作
+				dispatch_async(dispatch_get_main_queue(),^{
+        		//更新界面
+        		});
+        });
+
+		GCD的应用场合
+		1.主要应用在本地的多线程处理上，比如解析从网络传输过来的数据
+		2.对于网络方面的多线程控制，更多使用NSOperation,因为NSOperation的控制粒度更加精细
+
+ 之前面试问题
+
+		NSLog(@"1");//主线程中
+    	__block NSString *str = nil;
+    	// __block NSString *str = @"nn";
+
+    	dispatch_sync(dispatch_get_main_queue(),^{
+       		 NSLog(@"2");//放到主线程中，出现了线程死锁
+        	str = @"mm";
+        	NSLog(@"str=%@",str);
+        });
+    	NSLog(@"str=%@",str);
+		打印结果：1
+
+		NSLog(@"1");//主线程中
+		__block NSString *str = nil;
+		// __block NSString *str = @"nn";
+    	
+    	dispatch_async(dispatch_get_main_queue(),^{
+        NSLog(@"2");//放到主线程中，出现了线程死锁
+        str = @"mm";
+        NSLog(@"str=%@",str);
+    	});
+    	NSLog(@"str=%@",str);
+    	
+		2016-05-12 23:53:01.288 死锁[64929:7993992] 1
+		2016-05-12 23:53:01.289 死锁[64929:7993992] str=(null)
+		2016-05-12 23:53:01.294 死锁[64929:7993992] 2
+		2016-05-12 23:53:01.295 死锁[64929:7993992] str=mm
+
+		线程死锁的原因：
+		dispatch_sync的当前执行队列与提交block执行的目标队列相同时将造成死锁。 
+
+[iOS多线程编程技术之NSThread、Cocoa NSOperation、GCD](http://www.cocoachina.com/industry/20140520/8485.html)
 23. 消息机制
+	
+		Objective-C是基于C加入了面向对象特性和消息转发机制的动态语言，除编译器之外，还需用Runtime系统来动态创建类和对象，进行消息发送和转发。
+[深入理解Objective-C的Runtime机制](http://www.csdn.net/article/2015-07-06/2825133-objective-c-runtime/2)
 
-24. 分享，传什么参数，怎么实现？
+24. initialize和load的区别
+		
+		initialize和load的区别在于：load是只要类所在文件被引用就会被调用，而initialize是在类或者其子类的第一个方法被调用前调用。所以如果类没有被引用进项目，就不会有load调用；但即使类文件被引用进来，但是没有使用，那么initialize也不会被调用。
+25. 分享，传什么参数，怎么实现？
+26. APP上线的流程
 
+		1.配置发布环境。选择证书，打包环境是release环境。
+		2.选择发布方式，选择发布到appStore，企业版。
+		3.导出ipa文件。
+		4.上传ipa文件到appStore发布。
 
-
-
-
-
+27. block的内存泄露
+		
+		 block默认情况下,任何block都是在栈,随时可能会被回收.
+		 对block做一次copy操作,block的内存就会放到堆里面,能长期拥有		[myblcok copy];
+    	 Block_copy(myBlock);//在ARC下会报错
 
