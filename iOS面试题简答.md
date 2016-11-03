@@ -102,6 +102,31 @@
 13. 怎么给类别添加属性？
 		
 		使用runtime添加属性
+		头文件
+
+		@interface NSObject (test)
+
+		@property (nonatomic, copy) NSString *name;
+
+		@end
+		.m文件
+
+		@implementation NSObject (test)
+		// 定义关联的key
+		static const char *key = "name";
+		- (NSString *)name
+		{
+    		// 根据关联的key，获取关联的值。
+    		return objc_getAssociatedObject(self, key);
+		}
+		- (void)setName:(NSString *)name
+		{
+    		// 第一个参数：给哪个对象添加关联
+    		// 第二个参数：关联的key，通过这个key获取
+    		// 第三个参数：关联的value
+    		// 第四个参数:关联的策略
+    		objc_setAssociatedObject(self, key, name, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+		}
 		
 14. UITableView卡顿如何处理？
 
@@ -322,4 +347,4 @@
 		 block默认情况下,任何block都是在栈,随时可能会被回收.
 		 对block做一次copy操作,block的内存就会放到堆里面,能长期拥有		[myblcok copy];
     	 Block_copy(myBlock);//在ARC下会报错
-
+28. 线程间是如何通信的
