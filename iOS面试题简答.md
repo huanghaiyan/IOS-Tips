@@ -292,7 +292,7 @@
 		1.主要应用在本地的多线程处理上，比如解析从网络传输过来的数据
 		2.对于网络方面的多线程控制，更多使用NSOperation,因为NSOperation的控制粒度更加精细
 
- 之前面试问题
+	 之前面试问题
 
 		NSLog(@"1");//主线程中
     	__block NSString *str = nil;
@@ -324,17 +324,19 @@
 
 		线程死锁的原因：
 		dispatch_sync的当前执行队列与提交block执行的目标队列相同时将造成死锁。 
-
-[iOS多线程编程技术之NSThread、Cocoa NSOperation、GCD](http://www.cocoachina.com/industry/20140520/8485.html)
+   [iOS多线程编程技术之NSThread、Cocoa NSOperation、GCD](http://www.cocoachina.com/industry/20140520/8485.html)
+      
 23. 消息机制
 	
 		Objective-C是基于C加入了面向对象特性和消息转发机制的动态语言，除编译器之外，还需用Runtime系统来动态创建类和对象，进行消息发送和转发。
 [深入理解Objective-C的Runtime机制](http://www.csdn.net/article/2015-07-06/2825133-objective-c-runtime/2)
 
+
 24. initialize和load的区别
 		
 		initialize和load的区别在于：load是只要类所在文件被引用就会被调用，而initialize是在类或者其子类的第一个方法被调用前调用。所以如果类没有被引用进项目，就不会有load调用；但即使类文件被引用进来，但是没有使用，那么initialize也不会被调用。
 25. 分享，传什么参数，怎么实现？
+
 26. APP上线的流程
 
 		1.配置发布环境。选择证书，打包环境是release环境。
@@ -348,3 +350,13 @@
 		 对block做一次copy操作,block的内存就会放到堆里面,能长期拥有		[myblcok copy];
     	 Block_copy(myBlock);//在ARC下会报错
 28. 线程间是如何通信的
+
+
+29. NSString *name = [[NSString alloc]initWithString:@"张三"];
+NSLog(@"%d",[name retainCount]);
+	
+		上述代码打印结果是：-1
+		原理：字符串常量，类似于C语言形式，静态区存储，系统不会对其采用引用计数方式回收，所以不会对其做引用计数，即使我们如何对它retain或release，其值保持不变，对象也保持不变。
+		
+30. 
+
