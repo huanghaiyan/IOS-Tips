@@ -256,7 +256,7 @@
 	
 	答案：B
 	
-	解析：
+	解析：这是重写setter方法，然后在setter方法里调用setter方法，形成了死循环。
 
 15. 什么是key window？ 
 	
@@ -441,11 +441,13 @@
 	D、HTTP
 	
 	答案：D
+	解析：HTTP是网络协议
 	
 27. 使用imageNamed方法创建UIImage对象时，与普通的init方法有什么区别？
 
 	A、没有区别，只是为了方便 		B、imageNamed方法只是创建了一个指针，没有分配其他内存 	C、imageNamed方法将图片加载到内存中后不再释放 	D、imageNamed方法将使用完图片后立即释放
-	答案：C28. Objective-C有私有方法吗？有私有变量吗？ 
+	答案：C
+	解析：28. Objective-C有私有方法吗？有私有变量吗？ 
 	
 	A、有私有方法和私有变量 
 	
@@ -475,3 +477,116 @@
 	答案：C
 	
 	解析：
+
+31. 请问下面的array对象的retainCount是多少？
+	@property (nonatomic, retain) NSArray *array; 
+ 
+	self.array = [[NSArray alloc] init]; 
+	
+	A、1
+	
+	B、2
+	
+	C、3
+	
+	D、4
+
+	答案：A
+	
+	解析：如果没有上下文的话，只有self引用了array，其引用计数应该为1.
+	
+32. 请问下面的test对象的retainCount是多少
+
+	NSString *string = [[NSString alloc] initWithString:@"abc"];
+	
+	NSString *test = string;
+	A、1
+	
+	B、2
+	
+	C、3
+	
+	D、4
+	
+	答案：B
+	
+	解析：string指向了字符串@abc所在的内存区，而test指针指向了string指针，因此会对string所指向的内存区的引用计数加1，因此retainCount为2
+	
+33. NSInteger count=100,以下哪条语句没有错误
+
+	A、 NSArray *array = [NSArray arrayWithObject:count];
+	
+	B、 NSString *str = [NSString stringWithFormat:@"%@", count];
+	
+	C、 NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+	
+	D、 NSString *str = [count stringValue];
+	
+	答案：C
+	
+	解析：A中要求传对象；B中%@应该修改为%ld；D中count不是对象，没有方法！
+34. @property(nonatomic) NSInterger age;以下代码有什么问题？
+
+	-(void)setAge:(int)_age {
+   
+   	   self.age = _age;
+
+     }
+	
+    A、没有问题
+	
+	B、 死循环
+	
+	C、 内存泄漏
+	
+	D、 不能用int类型做参数
+	
+	答案：B
+	
+	解析：重写setter方法，然后在setter方法里调用setter方法，形成了死循环。
+	
+35. 下面程序的输出是
+
+		main() {
+  
+  			int a = -1, b = 4, k;
+  
+  			k = (a++<=0) && (!(b--<=0));
+  			printf("%d%d%d\n", k, a, b);
+		}
+	A、003
+	
+	B、012
+	
+	C、103
+	
+	D、112
+	
+	答案：C
+	
+	解析：k = (a++ <= 0) && (!(b– <= 0)); => a++表达式的值为-1，它是后增，所以表达式的值是-1；
+
+	由于a++ == -1，而-1 <= 0为真，因此继续看后面的表达式了：
+
+	但是a++是执行了的，所以a变成了0。
+
+	! (b– <= 0) => b == 3, 这个表达式的值为真，所以k的值为1
+
+	所以，k == 1, a == 0, b == 3
+	
+36. 设有：int a=1, b=2, c=3, d=4, m=2, n=2;执行(m=a>b)&&(n=c>d)后n的值是多少
+
+	A、1
+	
+	B、2
+	
+	C、3
+	
+	D、4
+	答案：B
+	
+	解析：(m = a > b) 的结果是m = 1 > 2 =>m = 0，由于&&（逻辑与）在前面的条件为假时，就会短路了，不会再继续往下执行判断，所以后面的表达式（n=c>d）是不会执行的，所以n的值不变。
+
+37.
+
+
