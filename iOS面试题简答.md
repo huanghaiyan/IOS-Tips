@@ -1,6 +1,6 @@
 面试题
 
-1-12ViVAT面试题
+1-12VIVAT面试题
 
 1. 在Object-C中 Category和 Extension的属性有什么区别
 	
@@ -358,5 +358,297 @@ NSLog(@"%d",[name retainCount]);
 		上述代码打印结果是：-1
 		原理：字符串常量，类似于C语言形式，静态区存储，系统不会对其采用引用计数方式回收，所以不会对其做引用计数，即使我们如何对它retain或release，其值保持不变，对象也保持不变。
 		
-30. 
+30. assign、retain、copy分别起什么作用？重写下面的属性的getter/setter方法
+	
+		@property (nonatomic, retain) NSNumber *num;
+		从题目可知这问的是MRC下的问题。在MRC下：
+
+		1.assign用于非对象类型，对于对象类型的只用于弱引用。
+		2.retain用于对象类型，强引用对象
+		3.copy用于对象类型，强引用对象。
+		重写setter/getter（如何重写getter和setter，是不会自动登录_num成员变量的，需要自己手动声明）：
+
+		- (NSNumber *)num {
+		return _num;
+		}
+ 
+		- (void)setNum:(NSNumber *)aNum {
+			if (_num != aNum) {
+				[_num release];
+				_num = nil;
+				_num = [aNum retain];
+			}
+	    }
+
+31. 如何声明一个delegate属性，为什么？
+	
+		声明属性时要，在ARC下使用weak，在MRC下使用assign。比如：
+		
+		@property (nonatomic, weak) id<HYBTestDelegate> delegate;
+		
+		在MRC下，使用assign是因为没有weak关键字，只能使用assign来防止循环引用。在ARC下，使用weak来防止循环引用。
+
+32. autorelease的对象何时被释放
+
+		如果了解一点点Run Loop的知道，应该了解到：Run Loop在每个事件循环结束后会去自动释放池将所有自动释放对象的引用计数减一，若引用计数变成了0，则会将对象真正销毁掉，回收内存。
+
+		所以，autorelease的对象是在每个事件循环结束后，自动释放池才会对所有自动释放的对象的引用计数减一，若引用计数变成了0，则释放对象，回收内存。因此，若想要早一点释放掉auto release对象，那么我们可以在对象外加一个自动释放池。比如，在循环处理数据时，临时变量要快速释放，就应该采用这种方式：
+		for (int i = 0; i < 10000000; ++i) {
+			@autoreleasepool {
+			HYBTestModel *tempModel = [[HYBTestModel alloc] init];
+			// 临时处理
+			// ...
+			} // 出了这里，就会去遍历该自动释放池了
+		}
+		
+33. 这段代码有问题吗？如何修改？
+
+		for (int i = 0; i < 10000; ++i) {
+			NSString *str = @"Abc";
+			str = [str lowercaseString];
+			str = [str stringByAppendingString:@"xyz"];
+			
+			NSLog(@"%@", str);
+		}
+		这道题从语法上看没有任何问题的，当然，既然面试官出了这一道题，那肯定是有问题的。
+
+		问题出在哪里呢？语法没有错啊？内存最后也可以得到释放啊！为什么会有问题呢？是的，问题是挺大的。这对于不了解iOS的自动释放池的原理的人或者说内存管理的人来说，这根本看不出来这有什么问题。
+
+		问题就出在内存得不到及时地释放。为什么得不到及时地释放？因为Run Loop是在每个事件循环结束后才会自动释放池去使对象的引用计数减一，对于引用计数为0的对象才会真正被销毁、回收内存。
+
+		因此，对于这里的问题，一个for循环执行10000次，会产生10000个临时自动释放对象，一直放到自动释放池中管理，而内存却得不到及时回收。
+
+		然后，现象是内存暴涨。正确的写法：
+		for (int i = 0; i < 10000; ++i) {
+			@autoreleasepool {
+				NSString *str = @"Abc";
+				str = [str lowercaseString];
+				str = [str stringByAppendingString:@"xyz"];
+				
+				NSLog(@"%@", str);
+				}
+		}
+	
+34. UIViewController的viewDidUnload、viewDidLoad和loadView分别什么时候调用？UIView的drawRect和layoutSubviews分别起什么作用？
+
+		第一个问题：
+		
+		1.在控制器被销毁前会调用viewDidUnload（MRC下才会调用）
+		2.在控制器没有任何view时，会调用loadView
+		3.在view加载完成时，会调用viewDidLoad
+		
+		第二个问题：
+		
+		1.在调用setNeedsDisplay后，会调用drawRect方法，我们通过在此方法中可以获取到context（设置上下文），就可以实现绘图
+		2.在调用setNeedsLayout后，会调用layoutSubviews方法，我们可以通过在此方法去调整UI。当然能引起layoutSubviews调用的方式有很多种的，比如添加子视图、滚动scrollview、修改视图的frame等。
+
+35. 自定义NSOperation，需要实现哪些方法？
+	
+		1.对于自定义非并发NSOperation，只需要实现main方法就可以了。
+		2.对于自定义并发NSOperation，需要重写main、start、isFinished、isExecuting，还要注意在相关地方加上kvo的代码，通知其它线程，否则当任务完成时，若没有设置isFinished=YES，isExecuting=NO，任务是不会退队的。
+	更多内容看这里：[iOS NSOperation](http://www.huangyibiao.com/ios-nsoperation-queue/)
+36. 用代码实现一个单例
+	
+		+ (instancetype)sharedInstance {
+			static id s_manager = nil;
+			
+			static dispatch_once_t onceToken;
+			dispatch_once(&onceToken, ^{
+				s_manager = [[HYBTestSingleton alloc] init];
+			});
+			return s_manager;
+		}
+
+37. 用代码实现一个冒泡算法
+
+		冒泡算法的核心算法思想是每趟两两比较，将小的往上浮，大的往下沉，就像气泡一样从水底往水面浮。
+		void bubbleSort(int a[], int len) {
+			for (int i = 0; i < len - 1; ++i) {
+				// 从水底往水面浮，所以从最后一个开始
+				for (int j = len - 1; j > i; j--) {
+					// 后者比前者还小，将需要交换
+					if (a[j] < a[j - 1]) {
+          				int temp = a[j];
+          				a[j] = a[j - 1];
+          				a[j - 1] = temp;
+          			}
+          		}
+        	}
+        }
+	
+38. UITableView是如何重用cell的？
+
+		UITableView提供了一个属性：visibleCells，它是记录当前在屏幕可见的cell，要想重用cell，我们需要明确指定重用标识（identifier）。
+
+		当cell滚动出tableview可视范围之外时，就会被放到可重用数组中。当有一个cell滚动出tableview可视范围之外时，同样也会有新的cell要显示到tableview可视区，因此这个新显示出来的cell就会先从可重用数组中通过所指定的identifier来获取，如果能够获取到，则直接使用之，否则创建一个新的cell。
+
+	
+39. 如何更高效地显示列表
+
+		要更高效地显示列表（不考虑种种优化），可以通过以下方法处理（只是部分）：
+		1.提前根据数据计算好高度并缓存起来
+		2.提前将数据处理、I/O计算异步处理好，并保存结果，在需要时直接拿来使用
+		
+40. 描述KVC、KVO机制
+
+		KVC即是指NSKeyValueCoding，是一个非正式的Protocol，提供一种机制来间接访问对象的属性。KVO 就是基于KVC实现的关键技术之一。
+
+		KVO即Key-Value Observing，是建立在KVC之上，它能够观察一个对象的KVC key path值的变化。 当keypath对应的值发生变化时，会回调observeValueForKeyPath:ofObject:change:context:方法，我们可以在这里处理。
+		
+41. 使用或了解哪些设计模式
+
+		在开发中真正常用到的设计模式（包括架构设计模式）：
+		1.单例设计模式
+		2.MVC构架设计模式
+		3.工厂设计模式
+		4.观察者设计模式（比如KVC/KVO/NSNotification，也有人说不是设计模式）
+		5.代理设计模式
+	更详细可以看这里：[23种设计模式目录](http://blog.csdn.net/damenhanter/article/details/50474449)
+	
+42. 在一个对象的方法里：self.name=@object;和name=@object有什么不同
+
+		这是老生常谈的话题了，实质上就是问setter方法赋值与成员变量赋值有什么不同。通过点语法self.name实质上就是[self setName:@object];。而name这里是成员变量，直接赋值。
+
+		一般来说，在对象的方法里成员变量和方法都是可以访问的，我们通常会重写Setter方法来执行某些额外的工作。比如说，外部传一个模型过来，那么我会直接重写Setter方法，当模型传过来时，也就是意味着数据发生了变化，那么视图也需要更新显示，则在赋值新模型的同时也去刷新UI。这样也不用再额外提供其他方法了。
+	
+43. UITableViewCell上有个UILabel，显示NSTimer实现的秒表时间，手指滚动cell过程中，label是否刷新，为什么？
+
+		这是否刷新取决于timer加入到Run Loop中的Mode是什么。Mode主要是用来指定事件在运行循环中的优先级的，分为：
+		NSDefaultRunLoopMode（kCFRunLoopDefaultMode）：默认，空闲状态
+		UITrackingRunLoopMode：ScrollView滑动时会切换到该Mode
+		UIInitializationRunLoopMode：run loop启动时，会切换到该mode
+		NSRunLoopCommonModes（kCFRunLoopCommonModes）：Mode集合
+		
+		苹果公开提供的Mode有两个，分别是NSDefaultRunLoopMode（kCFRunLoopDefaultMode）和NSRunLoopCommonModes（kCFRunLoopCommonModes）。
+
+		如果我们把一个NSTimer对象以NSDefaultRunLoopMode（kCFRunLoopDefaultMode）添加到主运行循环中的时候, ScrollView滚动过程中会因为mode的切换，而导致NSTimer将不再被调度。当我们滚动的时候，也希望不调度，那就应该使用默认模式。但是，如果希望在滚动时，定时器也要回调，那就应该使用common mode。
+
+		对于这道题，如果要cell滚动过程中定时器正常回调，UI正常刷新，那么要将timer放入到CommonModes下，因为是NSDefaultRunLoopMode，只有在空闲状态下才会回调。
+
+
+44. 有a、b、c、d 4个异步请求，如何判断a、b、c、d都完成执行？如果需要a、b、c、d顺序执行，该如何实现？
+
+		对于这四个异步请求，要判断都执行完成最简单的方式就是通过GCD的group来实现：
+		dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+		dispatch_group_t group = dispatch_group_create();
+		dispatch_group_async(group, queue, ^{ /*任务a */ });
+		dispatch_group_async(group, queue, ^{ /*任务b */ });
+		dispatch_group_async(group, queue, ^{ /*任务c */ }); 
+		dispatch_group_async(group, queue, ^{ /*任务d */ }); 
+ 
+		dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+		// 在a、b、c、d异步执行完成后，会回调这里
+		});
+		当然，我们还可以使用非常老套的方法来处理，通过四个变量来标识a、b、c、d四个任务是否完成，然后在runloop中让其等待，当完成时才退出run loop。但是这样做会让后面的代码得不到执行，直到Run loop执行完毕。
+
+		要求顺序执行，那么可以将任务放到串行队列中，自然就是按顺序来异步执行了。
+ 
+	
+45. 使用block有什么好处？使用NSTimer写出一个使用block显示（在UILabel上）秒表的代码。
+
+		说到block的好处，最直接的就是代码紧凑，传值、回调都很方便，省去了写代理的很多代码。
+
+		对于这里根本没有必要使用block来刷新UILabel显示，因为都是直接赋值。当然，笔者觉得这是在考验应聘者如何将NSTimer写成一个通用用的Block版本。
+
+		代码放到了这里：NSTimer封装成Block版
+
+		使用起来像这样：
+		NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                    repeats:YES
+                                   callback:^() {
+                                   weakSelf.secondsLabel.text = ...
+		}
+		[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+	
+46. 一个view已经初始化完毕，view上面添加了n个button（可能使用循环创建），除用view的tag之外，还可以采用什么办法来找到自己想要的button来修改Button的值
+
+		这个问题有很多种方式，而且不同的使用场景也不一样的。比如说：
+
+		第一种：如果是点击某个按钮后，才会刷新它的值，其它不用修改，那么不用引用任何按钮，直接在回调时，就已经将接收响应的按钮给传过来了，直接通过它修改即可。
+
+		第二种：点击某个按钮后，所有与之同类型的按钮都要修改值，那么可以通过在创建按钮时将按钮存入到数组中，在需要的时候遍历查找。
+
+
+47. tableview在滑动时，有时候会大量加载本地图片，这时候会很卡，如何解决加载耗时过长导致不流畅的问题
+		
+		这是优化tableview的相关专题，如果只是处理图片加载问题，那可以通过异步读取图片然后刷新UI。当然，我们也可以在取数据时，在模型中提前准备好需要显示的图片资源，这样在cell只就不需要操作图片读取，而是直接显示。
+		如果想要更深入地优化，学习以下知识点：
+	[Offscreen-Rendered](http://www.huangyibiao.com/archives/649)
+	
+	[Color Misaligned Images](http://www.huangyibiao.com/archives/640)
+	
+	[Color Blended Layers](http://www.huangyibiao.com/color-blended-layers/)
+
+48. 请写出以下代码输出
+
+		int a[5] = {1, 2, 3, 4, 5};
+		int *ptr = (int *)(&a + 1);
+		printf("%d, %d", *(a + 1), *(ptr + 1));
+		参考答案：2, 随机值
+
+		这种类型题好像挺常见的。考的就是C语言上的指针的理解和数组的理解。
+
+		分析：
+
+		a代表有5个元素的数组的首地址，a[5]的元素分别是1，2，3，4，5。接下来，a + 1表示数据首地址加1，那么就是a[1]，也就是对应于值为2.但是，这里是&a + 1，因为a代表的是整个数组，它的空间大小为5 * sizeof(int)，因此&a + 1就是a+5。a是个常量指针，指向当前数组的首地址，指针+1就是移动sizeof(int)个字节。
+
+		因此，ptr是指向int *类型的指针，而ptr指向的就是a + 5，那么ptr + 1也相当于a + 6，所以最后的*(ptr + 1)就是一个随机值了。而*(ptr – 1)就相当于a + 4，对应的值就是5。
+		
+49. 请写出以下代码输出
+		
+		main(){ 
+		int a[5]={1,2,3,4,5}; 
+		int *ptr=(int *)(&a+1);  
+		printf("%d,%d",*(a+1),*(ptr-1));
+		}		答：2,5
+		*(a+1)就是a[1]，*(ptr-1)就是a[4],执行结果是2.5 ，&a+1不是首地址+1，系统会认为加一个a数组的偏 移，是偏移了一个数组的大小（本例是5个int，int *ptr=(int *)(&a+1); 则ptr实际 是&(a[5]),也就是a+5 原因如下：
+		&a是数组指针，其类型为 int (*)[5]; 而指针加1要根据指针类型加上一定的值，不同类型的指针+1之后增加的大小不同。a是长度为5的int数组指针，所以要加 5*sizeof(int)所以ptr实际是a[5]，但是prt与(&a+1)类型是不一样的(这点很重要)，所以prt-1只会减去sizeof(int*)，a,&a的地址是一样的，但意思不一样，a是数组首地址，也就是a[0]的地址，&a是对象（数组）首地址，a+1是数组下一元素的地址，即a[1],&a+1是下一个对象的地址，即a[5].		
+50. 怎样使用performSelector传入3个以上参数，其中一个为结构体
+
+		- (id)performSelector:(SEL)aSelector;
+		- (id)performSelector:(SEL)aSelector withObject:(id)object;
+		- (id)performSelector:(SEL)aSelector withObject:(id)object1 withObject:(id)object2;
+		因为系统提供的performSelector的api中，并没有提供三个参数。因此，我们只能传数组或者字典，但是数组或者字典只有存入对象类型，而结构体并不是对象类型，那么怎么办呢？
+
+		没有办法，我们只能通过对象放入结构作为属性来传过去了：
+		typedef struct HYBStruct {
+			int a;
+			int b;
+		} *my_struct;
+ 
+		@interface HYBObject : NSObject
+ 
+		@property (nonatomic, assign) my_struct arg3;
+		@property (nonatomic, copy)  NSString *arg1;
+		@property (nonatomic, copy) NSString *arg2;
+ 
+		@end
+ 
+		@implementation HYBObject
+ 
+		// 在堆上分配的内存，我们要手动释放掉
+		- (void)dealloc {
+			free(self.arg3);
+		}
+ 
+		@end
+		
+		测试：
+		
+		my_struct str = (my_struct)(malloc(sizeof(my_struct)));
+		str->a = 1;
+		str->b = 2;
+		HYBObject *obj = [[HYBObject alloc] init];
+		obj.arg1 = @"arg1";
+		obj.arg2 = @"arg2";
+		obj.arg3 = str;
+ 
+		[self performSelector:@selector(call:) withObject:obj];
+  
+		// 在回调时得到正确的数据的
+		- (void)call:(HYBObject *)obj {
+    		NSLog(@"%d %d", obj.arg3->a, obj.arg3->b);
+		}
+	
+51. 哈哈
 
