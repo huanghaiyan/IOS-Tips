@@ -303,7 +303,7 @@
 	
 	答案：C
 	
-	解析： 只有主线程默认启动run loop，子线程等需要手动启动，且在特定的场景下需要启动：需要使用NSTimer等。
+	解析： 只有主线程默认启动run loop，每一个线程都有其对应的runloop,子线程等需要手动启动，且在特定的场景下需要启动:需要使用NSTimer等。
 	
 18. C和Objective-C的混合使用，以下描述错误的是：
 	
@@ -583,10 +583,93 @@
 	C、3
 	
 	D、4
+	
 	答案：B
 	
 	解析：(m = a > b) 的结果是m = 1 > 2 =>m = 0，由于&&（逻辑与）在前面的条件为假时，就会短路了，不会再继续往下执行判断，所以后面的表达式（n=c>d）是不会执行的，所以n的值不变。
 
-37.
+37. 以下哪一段代码不会抛出异常（）
+	
+	A、NSArray *array=@[1，2，3];NSNumber * number=array[3];
+	
+	B、NSDictionary *dict=@{@"key":nil};
+
+	C、NSString *str=nil;NSString *str2=[str substringFromIndex:3];
+
+	D、NSString *str=@"hi";NSString *str2=[str substringFromIndex:3];
+	
+	答案：C
+	
+	解析：A 错.数组内只有3元素，取3是取第4个，数组中没有。
+	
+	B 错.字典键值对，值不能为空。
+	
+	C 对.是因为oc中给nil发送消息是可以的
+	
+	D 错. 字符串str=@"hi"中只赋值了” hi “ 2个字符，查询下标为3，越界会报错。
+	
+38. delegate中的property使用以下哪个属性（）
+	
+	A、assign
+	
+	B、retain
+	
+	C、copy
+	
+	D、strong
+	
+	答案:A
+	
+	解析：避免循环引用！那么就要知道循环引用是怎么来的？比如，使用 tableview 的时候我们会设置他的 delete；可能一般情况下是你的 viewcontroller 对象；viewcontroller 持有着这个  tableview，如果 tableview 不使用 assign （arc 使用 weak） 的话，那么就造成了  tableview 持有viewcontroller，即 相互持有，最终结果是 viewcontroller 内存泄露，释放不掉了；这是一个很严重的问题！viewcontroller 是一个很大的对象！
+	
+39. 下面四种内部排序算法中哪一种在最差情况下时间复杂度最高？ 
+
+	A、快速排序 
+	
+	B、冒泡排序 
+	
+	C、堆排序 
+	
+	D、归并排序
+	
+	答案：B
+	
+40. 下面的数据结构中不属于线性结构的是
+
+	A、栈
+	
+	B、链表
+	
+	C、二叉树
+	
+	D、线性表
+	
+	答案：C
+	
+41. 在Xcode中，需要编译混合Objective-C和C++的源码文件，需要将文件格式的后缀改为 
+
+	A、.c
+	
+	B、.cpp
+	
+	C、.mm
+	
+	D、.m
+
+	答案：C
+	
+42. post传输的最大文件限制为
+
+	A、1G
+	
+	B、2G
+	
+	C、4G
+	
+	D、8G
+	
+	答案：C
+
+43. 
 
 

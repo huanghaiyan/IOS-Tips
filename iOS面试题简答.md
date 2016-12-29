@@ -650,5 +650,5 @@ NSLog(@"%d",[name retainCount]);
     		NSLog(@"%d %d", obj.arg3->a, obj.arg3->b);
 		}
 	
-51. 哈哈
+51. 
 
