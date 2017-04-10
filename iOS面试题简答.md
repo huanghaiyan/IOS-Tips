@@ -32,7 +32,7 @@
 		3>. #define APPVERSION [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] //定义一个宏获取当前应用的版本号
 		4>.#define JudgeIsNull(value) (([value isEqual:[NSNull null]]|| (value == nil))?@"":value)    //处理返回值为nil,NULL问题
 
-3. @property有哪些属性修饰符，区别是什么
+3. @property有哪些属性修饰符，区别是什么？(重点)
 		
 		readwrite：同时生成get方法和set方法的声明和实现
 		readonly：只生成get方法的声明和实现
@@ -86,7 +86,7 @@
 10. 如何用GCD同步若干个异步调用（如多个网络请求同时返回后进行UI操作）
 
 
-11. 常用的第三方开源框架
+11. 常用的第三方开源框架(重点)
 	
 		AFNetWorking、SDWebImage、FMDB、Masory、MJRefresh
 
@@ -128,10 +128,10 @@
     		objc_setAssociatedObject(self, key, name, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 		}
 		
-14. UITableView卡顿如何处理？
+14. UITableView卡顿如何处理？(重点)
 	
 
-15. 常见的设计模式有哪些？
+15. 常见的设计模式有哪些？（重点）
 		
 		单例模式
 
@@ -208,29 +208,30 @@
 		4、 服务端程序向APNS服务发送消息。
     	5、APNS服务将消息发送给iPhone应用程序。
 	参考文章： [ios推送消息的基本原理](http://blog.csdn.net/dongdongdongjl/article/details/8452211)
-17. SDWebImage内部如何实现的，图片如何存储的？
+17. SDWebImage内部如何实现的，图片如何存储的？（重点）
 	
-	
+	![图片缓存原理](https://github.com/huanghaiyan/IOS-Tips/blob/master/images/图片缓存原理.jpg)
+
 	其他文章[一行行看SDWebImage源码（一）](http://www.jianshu.com/p/82c7f2865c92)
 
 	[一行行看SDWebImage源码 （二）](http://www.jianshu.com/p/67f8daa47a10)
 	
-18. 内存问题
+18. 内存问题（重点）
 		
 		NSString *name = [[NSString alloc]initWithString:@"张三"];
 		NSLog(@"%d",[name retainCount]);
 		上述代码打印结果是：-1
-19. 对于语句NSString*obj = [[NSData alloc] init]; ，编译时和运行时obj分别是什么类型？
+19. 对于语句NSString*obj = [[NSData alloc] init]; ，编译时和运行时obj分别是什么类型？（重点）
 		
 		编译时是NSString类型,运行时是NSData类型
 		
-20. \#import 跟#include、@class有什么区别？＃import<> 跟 #import”"又什么区别？
+20. \#import 跟#include、@class有什么区别？＃import<> 跟 #import”"又什么区别？（重点）
 		
 		#import和#include都能完整地包含某个文件的内容，#import能防止同一个文件被包含多次
 		@class仅仅是声明一个类名，并不会包含类的完整声明;@class还能解决循环包含的问题
 		#import <> 用来包含系统自带的文件，#import “”用来包含自定义的文件
 
-21. Objective-C如何对内存管理的,说说你的看法和解决方法?
+21. Objective-C如何对内存管理的,说说你的看法和解决方法?（重点）
 	
 		1.每个对象都有一个引用计数器，每个新对象的计数器是1，当对象的计数器减为0时，就会被销毁
 		2.通过retain可以让对象的计数器+1、release可以让对象的计数器-1
@@ -238,7 +239,7 @@
 		4.如果用ARC，编译器会自动生成管理内存的代码
 		5.及时关闭不用的资源，使用缓存机制，尽量复用
 	
-22. OC中创建线程的方法是什么？如果指定在主线程中执行代码？如何延时执行代码？
+22. OC中创建线程的方法是什么？如果指定在主线程中执行代码？如何延时执行代码？（重点）
 	
 		1.创建线程的方法
 		> NSThread
@@ -327,7 +328,7 @@
 		dispatch_sync的当前执行队列与提交block执行的目标队列相同时将造成死锁。 
    [iOS多线程编程技术之NSThread、Cocoa NSOperation、GCD](http://www.cocoachina.com/industry/20140520/8485.html)
       
-23. 消息机制
+23. 消息机制 （重点）
 	
 		Objective-C是基于C加入了面向对象特性和消息转发机制的动态语言，除编译器之外，还需用Runtime系统来动态创建类和对象，进行消息发送和转发。
 [深入理解Objective-C的Runtime机制](http://www.csdn.net/article/2015-07-06/2825133-objective-c-runtime/2)
@@ -338,14 +339,14 @@
 		initialize和load的区别在于：load是只要类所在文件被引用就会被调用，而initialize是在类或者其子类的第一个方法被调用前调用。所以如果类没有被引用进项目，就不会有load调用；但即使类文件被引用进来，但是没有使用，那么initialize也不会被调用。
 25. 分享，传什么参数，怎么实现？
 
-26. APP上线的流程
+26. APP上线的流程 
 
 		1.配置发布环境。选择证书，打包环境是release环境。
 		2.选择发布方式，选择发布到appStore，企业版。
 		3.导出ipa文件。
 		4.上传ipa文件到appStore发布。
 
-27. block的内存泄露
+27. block的内存泄露 （重点）
 		
 		 block默认情况下,任何block都是在栈,随时可能会被回收.
 		 对block做一次copy操作,block的内存就会放到堆里面,能长期拥有		[myblcok copy];
@@ -354,12 +355,12 @@
 
 
 29. NSString *name = [[NSString alloc]initWithString:@"张三"];
-NSLog(@"%d",[name retainCount]);
+NSLog(@"%d",[name retainCount]); 
 	
 		上述代码打印结果是：-1
 		原理：字符串常量，类似于C语言形式，静态区存储，系统不会对其采用引用计数方式回收，所以不会对其做引用计数，即使我们如何对它retain或release，其值保持不变，对象也保持不变。
 		
-30. assign、retain、copy分别起什么作用？重写下面的属性的getter/setter方法
+30. assign、retain、copy分别起什么作用？重写下面的属性的getter/setter方法 （重点）
 	
 		@property (nonatomic, retain) NSNumber *num;
 		从题目可知这问的是MRC下的问题。在MRC下：
@@ -381,7 +382,7 @@ NSLog(@"%d",[name retainCount]);
 			}
 	    }
 
-31. 如何声明一个delegate属性，为什么？
+31. 如何声明一个delegate属性，为什么？ （重点）
 	
 		声明属性时要，在ARC下使用weak，在MRC下使用assign。比如：
 		
@@ -389,7 +390,7 @@ NSLog(@"%d",[name retainCount]);
 		
 		在MRC下，使用assign是因为没有weak关键字，只能使用assign来防止循环引用。在ARC下，使用weak来防止循环引用。
 
-32. autorelease的对象何时被释放
+32. autorelease的对象何时被释放 （重点）
 
 		如果了解一点点Run Loop的知道，应该了解到：Run Loop在每个事件循环结束后会去自动释放池将所有自动释放对象的引用计数减一，若引用计数变成了0，则会将对象真正销毁掉，回收内存。
 
@@ -401,8 +402,8 @@ NSLog(@"%d",[name retainCount]);
 			// ...
 			} // 出了这里，就会去遍历该自动释放池了
 		}
-		
-33. 这段代码有问题吗？如何修改？
+		 
+33. 这段代码有问题吗？如何修改？ （重点）
 
 		for (int i = 0; i < 10000; ++i) {
 			NSString *str = @"Abc";
@@ -448,7 +449,7 @@ NSLog(@"%d",[name retainCount]);
 		1.对于自定义非并发NSOperation，只需要实现main方法就可以了。
 		2.对于自定义并发NSOperation，需要重写main、start、isFinished、isExecuting，还要注意在相关地方加上kvo的代码，通知其它线程，否则当任务完成时，若没有设置isFinished=YES，isExecuting=NO，任务是不会退队的。
 	更多内容看这里：[iOS NSOperation](http://www.huangyibiao.com/ios-nsoperation-queue/)
-36. 用代码实现一个单例
+36. 用代码实现一个单例 （重点）
 	
 		+ (instancetype)sharedInstance {
 			static id s_manager = nil;
@@ -460,7 +461,7 @@ NSLog(@"%d",[name retainCount]);
 			return s_manager;
 		}
 
-37. 用代码实现一个冒泡算法
+37. 用代码实现一个冒泡算法 （重点）
 
 		冒泡算法的核心算法思想是每趟两两比较，将小的往上浮，大的往下沉，就像气泡一样从水底往水面浮。
 		void bubbleSort(int a[], int len) {
@@ -477,14 +478,14 @@ NSLog(@"%d",[name retainCount]);
         	}
         }
 	
-38. UITableView是如何重用cell的？
+38. UITableView是如何重用cell的？（重点）
 
 		UITableView提供了一个属性：visibleCells，它是记录当前在屏幕可见的cell，要想重用cell，我们需要明确指定重用标识（identifier）。
 
 		当cell滚动出tableview可视范围之外时，就会被放到可重用数组中。当有一个cell滚动出tableview可视范围之外时，同样也会有新的cell要显示到tableview可视区，因此这个新显示出来的cell就会先从可重用数组中通过所指定的identifier来获取，如果能够获取到，则直接使用之，否则创建一个新的cell。
 
 	
-39. 如何更高效地显示列表
+39. 如何更高效地显示列表 （重点）
 
 		要更高效地显示列表（不考虑种种优化），可以通过以下方法处理（只是部分）：
 		1.提前根据数据计算好高度并缓存起来
@@ -496,7 +497,7 @@ NSLog(@"%d",[name retainCount]);
 
 		KVO即Key-Value Observing，是建立在KVC之上，它能够观察一个对象的KVC key path值的变化。 当keypath对应的值发生变化时，会回调observeValueForKeyPath:ofObject:change:context:方法，我们可以在这里处理。
 		
-41. 使用或了解哪些设计模式
+41. 使用或了解哪些设计模式？ （重点）
 
 		在开发中真正常用到的设计模式（包括架构设计模式）：
 		1.单例设计模式
@@ -506,13 +507,13 @@ NSLog(@"%d",[name retainCount]);
 		5.代理设计模式
 	更详细可以看这里：[23种设计模式目录](http://blog.csdn.net/damenhanter/article/details/50474449)
 	
-42. 在一个对象的方法里：self.name=@object;和name=@object有什么不同
+42. 在一个对象的方法里：self.name=@object;和name=@object有什么不同？（重点）
 
 		这是老生常谈的话题了，实质上就是问setter方法赋值与成员变量赋值有什么不同。通过点语法self.name实质上就是[self setName:@object];。而name这里是成员变量，直接赋值。
 
 		一般来说，在对象的方法里成员变量和方法都是可以访问的，我们通常会重写Setter方法来执行某些额外的工作。比如说，外部传一个模型过来，那么我会直接重写Setter方法，当模型传过来时，也就是意味着数据发生了变化，那么视图也需要更新显示，则在赋值新模型的同时也去刷新UI。这样也不用再额外提供其他方法了。
 	
-43. UITableViewCell上有个UILabel，显示NSTimer实现的秒表时间，手指滚动cell过程中，label是否刷新，为什么？
+43. UITableViewCell上有个UILabel，显示NSTimer实现的秒表时间，手指滚动cell过程中，label是否刷新，为什么？（重点）
 
 		这是否刷新取决于timer加入到Run Loop中的Mode是什么。Mode主要是用来指定事件在运行循环中的优先级的，分为：
 		NSDefaultRunLoopMode（kCFRunLoopDefaultMode）：默认，空闲状态
@@ -545,7 +546,7 @@ NSLog(@"%d",[name retainCount]);
 		要求顺序执行，那么可以将任务放到串行队列中，自然就是按顺序来异步执行了。
  
 	
-45. 使用block有什么好处？使用NSTimer写出一个使用block显示（在UILabel上）秒表的代码。
+45. 使用block有什么好处？使用NSTimer写出一个使用block显示（在UILabel上）秒表的代码。（重点）
 
 		说到block的好处，最直接的就是代码紧凑，传值、回调都很方便，省去了写代理的很多代码。
 
@@ -570,7 +571,7 @@ NSLog(@"%d",[name retainCount]);
 		第二种：点击某个按钮后，所有与之同类型的按钮都要修改值，那么可以通过在创建按钮时将按钮存入到数组中，在需要的时候遍历查找。
 
 
-47. tableview在滑动时，有时候会大量加载本地图片，这时候会很卡，如何解决加载耗时过长导致不流畅的问题
+47. tableview在滑动时，有时候会大量加载本地图片，这时候会很卡，如何解决加载耗时过长导致不流畅的问题？（重点）
 		
 		这是优化tableview的相关专题，如果只是处理图片加载问题，那可以通过异步读取图片然后刷新UI。当然，我们也可以在取数据时，在模型中提前准备好需要显示的图片资源，这样在cell只就不需要操作图片读取，而是直接显示。
 		如果想要更深入地优化，学习以下知识点：
@@ -651,5 +652,130 @@ NSLog(@"%d",[name retainCount]);
     		NSLog(@"%d %d", obj.arg3->a, obj.arg3->b);
 		}
 	
-51. 
+51. tableview的执行顺序
 
+		numberOfRowsInSection
+		heightForRowAtIndexPath
+		cellForRowAtIndexPath
+
+52. 二叉树的遍历 （重点）
+	
+		遍历即将树的所有结点访问且仅访问一次。按照根节点位置的不同分为前序遍历，中序遍历，后序遍历。
+		前序遍历：根节点->左子树->右子树
+		中序遍历：左子树->根节点->右子树
+		后序遍历：左子树->右子树->根节点
+53. 排序算法 （重点）
+		
+		1.冒泡算法的核心算法思想是每趟两两比较，将小的往上浮，大的往下沉，就像气泡一样从水底往水面浮。
+		void bubbleSort(int a[], int len) {
+			for (int i = 0; i < len - 1; ++i) {
+				// 从水底往水面浮，所以从最后一个开始
+				for (int j = len - 1; j > i; j--) {
+					// 后者比前者还小，将需要交换
+					if (a[j] < a[j - 1]) {
+          				int temp = a[j];
+          				a[j] = a[j - 1];
+          				a[j - 1] = temp;
+          			}
+          		}
+        	}
+        }
+		2.选择排序
+		#pragma - mark 选择排序  
+		+ (void)selectSort:(NSMutableArray *)array  
+		{  
+    		if(array == nil || array.count == 0){  
+    		return;  
+    		}  
+      
+    		int min_index;  
+    		for (int i = 0; i < array.count; i++) {  
+        	min_index = i;  
+        		for (int j = i + 1; j<array.count; j++) {  
+            		if ([array[j] compare:array[min_index]] == NSOrderedAscending) {  
+                		[array exchangeObjectAtIndex:j withObjectAtIndex:min_index];  
+            		}  
+              
+            		printf("排序中:");  
+            		[self printArray:array];  
+        		}  
+        	}
+        }  
+  
+		3.插入排序
+		#pragma - mark 插入排序  
+		+ (void)inserSort:(NSMutableArray *)array  
+		{  
+    		if(array == nil || array.count == 0){  
+        	return;  
+    		}  
+      
+    		for (int i = 0; i < array.count; i++) {  
+        		NSNumber *temp = array[i];  
+        		int j = i-1;  
+          
+        		while (j >= 0 && [array[j] compare:temp] == NSOrderedDescending) {  
+            		[array replaceObjectAtIndex:j+1 withObject:array[j]];  
+            		j--;  
+              
+            		printf("排序中:");  
+            		[self printArray:array];  
+        		}  
+          
+        	[array replaceObjectAtIndex:j+1 withObject:temp];  
+    		}  
+		}  
+  
+	
+54. array[]  = 12121222211112222，对array进行排序，使所有的1在前面，2在后面
+	
+	
+	
+55. 用oc写一个单例 （重点）
+	
+		//  NHLocationManager.h
+
+		#import <Foundation/Foundation.h>
+		@interface NHLocationManager : NSObject
+		+ (instancetype)sharedManager;
+		@end
+
+
+		//  NHLocationManager.m
+		#import "NHLocationManager.h"
+		static NHLocationManager *_singleton = nil;
+
+		+ (instancetype)sharedManager {
+    		static dispatch_once_t onceToken;
+    		dispatch_once(&onceToken, ^{
+        		_singleton = [[NHLocationManager alloc] init];
+    		});
+    		return _singleton;
+		}
+
+56. 多线程方面（重点）
+	
+	
+	
+57. 简析浅拷贝和深拷贝 （重点）
+	
+		浅拷贝仅仅是拷贝了指针， 就是新的指针指向的还是同一块内存空间。深拷贝是重新向操作系统申请了相同的内存，并把原来的所有数据复制一份。浅拷贝相当于对于原指针的引用计数加了1.深拷贝的主要区别， 重新分配了内存空间。
+	
+58. 简述进程和线程的区别 （重点）
+		
+		进程是操作系统动态执行的基本单元，在传统的操作系统设计中，进程即是基本的分配单元，也是基本的执行单元。
+		进程就是程序的一次执行过程。
+		线程是由进程派生出来的一组代码的执行过程。
+		线程是由进程派生出来的，一个进程可以产生多个线程，线程的特点是共享进程的内存空间，他们可以并发、异步地执行。
+59. viewcontroller的生命周期 （重点）
+	
+	
+	
+60. TCP的三次握手
+		
+		第一次握手:客户端发送syn包(syn=j)到服务器,并进入SYN_SEND状态等待服务器确认;
+		第二次握手:服务器端收到syn包,必须确认客户的SYN(ack = j + 1),同时自己也发送一个SYN包(syn=k)即SYN+ ACK包,此时服务器进入SYN_RECV状态;
+		第三次握手:客户端收到服务器的SYN+ACK包,向服务器发送确认包ACK(ACK = k+1),此包发送完毕,客户端和服务器端进入进入ESTABLISHED状态,完成三次握手.
+61. 数据解析
+	
+		XML与JSON数据解析，常用json。使用MJExtation进行json转模型。
