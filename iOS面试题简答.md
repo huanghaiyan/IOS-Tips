@@ -1,7 +1,5 @@
 面试题
 
-1-12VIVAT面试题
-
 1. 在Object-C中 Category和 Extension的属性有什么区别
 	
 		类扩展（class extension）
