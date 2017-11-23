@@ -1,7 +1,5 @@
 面试题
 
-1-12VIVAT面试题
-
 1. 在Object-C中 Category和 Extension的属性有什么区别
 	
 		类扩展（class extension）
@@ -602,9 +600,13 @@ NSLog(@"%d",[name retainCount]);
 		int a[5]={1,2,3,4,5}; 
 		int *ptr=(int *)(&a+1);  
 		printf("%d,%d",*(a+1),*(ptr-1));
-		}		答：2,5
-		*(a+1)就是a[1]，*(ptr-1)就是a[4],执行结果是2.5 ，&a+1不是首地址+1，系统会认为加一个a数组的偏 移，是偏移了一个数组的大小（本例是5个int，int *ptr=(int *)(&a+1); 则ptr实际 是&(a[5]),也就是a+5 原因如下：
-		&a是数组指针，其类型为 int (*)[5]; 而指针加1要根据指针类型加上一定的值，不同类型的指针+1之后增加的大小不同。a是长度为5的int数组指针，所以要加 5*sizeof(int)所以ptr实际是a[5]，但是prt与(&a+1)类型是不一样的(这点很重要)，所以prt-1只会减去sizeof(int*)，a,&a的地址是一样的，但意思不一样，a是数组首地址，也就是a[0]的地址，&a是对象（数组）首地址，a+1是数组下一元素的地址，即a[1],&a+1是下一个对象的地址，即a[5].		
+		}
+		答：2,5
+
+		*(a+1)就是a[1]，*(ptr-1)就是a[4],执行结果是2.5 ，&a+1不是首地址+1，系统会认为加一个a数组的偏 移，是偏移了一个数组的大小（本例是5个int，int *ptr=(int *)(&a+1); 则ptr实际 是&(a[5]),也就是a+5 原因如下：
+
+		&a是数组指针，其类型为 int (*)[5]; 而指针加1要根据指针类型加上一定的值，不同类型的指针+1之后增加的大小不同。a是长度为5的int数组指针，所以要加 5*sizeof(int)所以ptr实际是a[5]，但是prt与(&a+1)类型是不一样的(这点很重要)，所以prt-1只会减去sizeof(int*)，a,&a的地址是一样的，但意思不一样，a是数组首地址，也就是a[0]的地址，&a是对象（数组）首地址，a+1是数组下一元素的地址，即a[1],&a+1是下一个对象的地址，即a[5].
+		
 50. 怎样使用performSelector传入3个以上参数，其中一个为结构体
 
 		- (id)performSelector:(SEL)aSelector;
@@ -771,11 +773,58 @@ NSLog(@"%d",[name retainCount]);
 	
 	
 	
-60. TCP的三次握手
+60. TCP的三次握手 （重点）
 		
 		第一次握手:客户端发送syn包(syn=j)到服务器,并进入SYN_SEND状态等待服务器确认;
 		第二次握手:服务器端收到syn包,必须确认客户的SYN(ack = j + 1),同时自己也发送一个SYN包(syn=k)即SYN+ ACK包,此时服务器进入SYN_RECV状态;
-		第三次握手:客户端收到服务器的SYN+ACK包,向服务器发送确认包ACK(ACK = k+1),此包发送完毕,客户端和服务器端进入进入ESTABLISHED状态,完成三次握手.
+		第三次握手:客户端收到服务器的SYN+ACK包,向服务器发送确认包ACK(ACK = k+1),此包发送完毕,客户端和服务器端进入ESTABLISHED状态,完成三次握手.
 61. 数据解析
 	
 		XML与JSON数据解析，常用json。使用MJExtation进行json转模型。
+62. KVO原理探究
+
+        KVO的使用（参数，哪些用到了KVO）?
+        // 添加键值观察
+        /*
+        1 观察者，负责处理监听事件的对象
+        2 观察的属性
+        3 观察的选项
+        4 上下文
+        */
+        [self.person addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:@"Person Name"];
+        
+        observer中需要实现一下方法：
+        
+        // 所有的 kvo 监听到事件，都会调用此方法
+        /*
+        1. 观察的属性
+        2. 观察的对象
+        3. change 属性变化字典（新／旧）
+        4. 上下文，与监听的时候传递的一致
+        */
+        - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
+        
+63. 线性表的相关知识
+
+        线性表的顺序表示的是用一组地址连续的存储单元一次存储线性表的数据元素。
+        顺序存储的特点：
+        （1）结构简单，易于理解 （2）方便随机访问表中的每个元素
+        缺点：在做插入或删除操作时，需要移动大量元素
+        线性表的链式存储结构的特点是用一组任意的存储单元存储线性表的数据元素。（这组存储单元可以是连续的，也可以是不连续的）。
+        链式存储的特点：
+        优点：便于插入或删除
+        缺点：失去了顺序表可随机存取的优点
+        
+        栈：栈是限定仅在表尾进行插入或删除的线性表。栈也分为顺序存储结构、链式存储。
+        栈特点：先进后出
+        
+        队列：队列是一种先进先出的线性表。它只允许在表的一端进行插入，而在另一端删除元素。允许插入的一端叫做队尾，允许删除的一端则称为队头。
+        
+        
+64. AFNetworking网络请求有没有最大线程数
+
+        AFNetworking所有的网络请求都是放到了NSOperationQueue中，而该queue会有多个并发的线程来执行。默认情况下系统会根据硬件的条件，比如CPU的核心数等来设置并发的线程数，我们也可以手动的设置该变量。
+        [[self.requestOperationManager operationQueue] setMaxConcurrentOperationCount:2];
+        
+        
+        

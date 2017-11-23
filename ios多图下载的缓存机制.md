@@ -67,7 +67,7 @@
 
 		@property (nonatomic,strong) NSOperationQueue* queue;
 
-2.1.图片下载之前的查询缓存部分：
+2.1. 图片下载之前的查询缓存部分：
 
 	//先从images缓存中取出图片url对应的UIImage
 
@@ -113,7 +113,7 @@
 
     }
 
-2.2图片的下载部分
+2.2 图片的下载部分
 
 	#pragma mark -图片下载 ，imageUrl图片的url
 
