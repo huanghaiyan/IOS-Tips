@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 面试题
 
 1. 在Object-C中 Category和 Extension的属性有什么区别
@@ -828,8 +828,6 @@ NSLog(@"%d",[name retainCount]);
         [[self.requestOperationManager operationQueue] setMaxConcurrentOperationCount:2];
         
         
-        
-=======
 面试题
 
 1. 在Object-C中 Category和 Extension的属性有什么区别
@@ -1567,10 +1565,10 @@ NSLog(@"%d",[name retainCount]);
 
 	我们要做的是调整数组中元素的顺序，所以显然函数中主要的操作是交换元素，也就是交换奇数和偶数，使奇数位于偶数前边。在前边各种数组的题目中，我们常用到使用两个指针的方法，一个从前向后移动，一个从后向前移动。当前边的指针指向一个偶数，而后边的指针指向一个奇数时，交换两个元素，直到两个指针相遇为止。
 
-	void ReorderArray(int* pData, unsigned int length)
-	{
-		if (pData == NULL || length <= 0)
-			return;
+        void ReorderArray(int* pData, unsigned int length)
+        {
+            if (pData == NULL || length <= 0)
+                return;
 
 		unsigned int Begin = 0;
 		unsigned int End = length - 1;
@@ -1646,4 +1644,3 @@ NSLog(@"%d",[name retainCount]);
 61. 数据解析
 	
 		XML与JSON数据解析，常用json。使用MJExtation进行json转模型。
->>>>>>> origin/master
