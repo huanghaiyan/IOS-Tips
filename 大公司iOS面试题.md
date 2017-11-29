@@ -644,3 +644,34 @@
         
 58. 编译过程做了哪些事情？
 
+59. NSString *a = @"abcd", NSString *b = @"abcd",是同一地址吗？
+
+        我们都知道NSString是一个Objective-C的类，但是我们有时发现它的对象在内存管理上貌似和其他的对象有一些区别。比如有时你会发现对一个NSString进行copy操作时，它还是原本的对象，实际上并未拷贝对象。
+        1.2 NSString的创建
+        
+        1.2.1测试NSString
+        
+        在objc中，我们一般通过几种方法来创建NSString呢，一般有三种方法，现在我们就分别对这三种情况写段测试代码，如下：
+        
+        NSString *str1 = @"1234567890";    TLog(str1);
+        
+        //str1: __NSCFConstantString -> 0x715ec : 1234567890  -1
+        
+        NSString *str2 = [NSString stringWithString:@"1234567890"];        TLog(str2);
+        
+        //str2: __NSCFConstantString -> 0x715ec : 1234567890  -1
+        
+        NSString *str3 = [NSString stringWithFormat:@"1234567890"];        TLog(str3);
+        
+        //str3: __NSCFString -> 0x1557cb50 : 1234567890  1
+        
+        看到上面这段测试代码，我们可以发现几点同我们想象不同的地方：
+        
+        第一种方式和第二种方式创建出来的NSString时一模一样的，isa是__NSCFConstantString，内存地址一样，retainCount是-1.
+        第三种方式创建的NSString和创建其他objc对象类似的，在堆上分配内存，初始retainCount为1.
+        这里面有几个疑问：
+        
+        什么是__NSCFConstantString？
+        为什么第一种和第二种NSString的内存地址是一样的？
+        为什么他们的retainCount是-1？
+
