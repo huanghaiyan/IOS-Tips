@@ -674,4 +674,66 @@
         什么是__NSCFConstantString？
         为什么第一种和第二种NSString的内存地址是一样的？
         为什么他们的retainCount是-1？
+        
+60. block和函数指针的理解；
 
+        相似点：
+
+        函数指针和Block都可以实现回调的操作，声明上也很相似，实现上都可以看成是一个代码片段。
+
+        函数指针类型和Block类型都可以作为变量和函数参数的类型。（typedef定义别名之后，这个别名就是一个类型）
+
+        不同点：
+
+        函数指针只能指向预先定义好的函数代码块（可以是其他文件里面定义，通过函数参数动态传入的），函数地址是在编译链接时就已经确定好的。
+
+        Block本质是Objective-C对象，是NSObject的子类，可以接收消息。
+
+        函数里面只能访问全局变量，而Block代码块不光能访问全局变量，还拥有当前栈内存和堆内存变量的可读性（当然通过__block访问指示符修饰的局部变量还可以在block代码块里面进行修改）。
+
+        从内存的角度看，函数指针只不过是指向代码区的一段可执行代码，而block实际上是程序运行过程中在栈内存动态创建的对象，可以向其发送copy消息将block对象拷贝到堆内存，以延长其生命周期。
+61. setValue和setObject的区别
+
+        1、setValue: forKey: 的定义
+        @interface NSMutableDictionary(NSKeyValueCoding)
+        /* Send -setObject:forKey: to the receiver, unless the value is nil, in which case send -removeObject:forKey:.
+        */
+        -(void)setValue:(id)value forKey:(NSString *)key;
+        @end
+        
+        扩展 NSMutableDictionary 的一个类别，上面注释说的很清楚，发送
+        setObject: forKey: 给接收者，也就是调用 setObject: forKey: 方法，
+        除非 value 为 nil 的时候，调用方法 removeObject: forKey:。
+        
+        2、setObject: forKey: 的定义
+        @interface NSMutableDictionary : NSDictionary
+        -(void)removeObjectForKey:(id)aKey;
+        -(void)setObject:(id)anObject forKey:(id <NSCopying>)aKey;
+        @end
+        
+        注意：setObject: forKey: 中 key 的对象是一个 id 类型，并不是
+        NSString，只不过我们经常使用 NSString 而已。
+        
+        3、区别
+        
+        1、setObject: forkey: 中 object 是不能够为 nil 的，不然会报错。
+        setValue: forKey: 中 value 能够为 nil，但是当 value 为 nil 的时候，会自动调用 removeObject: forKey:方法。
+        2、setValue: forKey:中 key 的参数只能够是 NSString 类型，而
+        setObject: forkey: 中的 key 可以是任何类型。
+        
+        MJExtation:模型解析
+        
+62.  字典大致实现原理；
+
+    一：字典原理
+    NSDictionary（字典）是使用hash表来实现key和value之间的映射和存储的
+    方法：- (void)setObject:(id)anObject forKey:(id)aKey;
+    Objective-C中的字典NSDictionary底层其实是一个哈希表
+
+    二: 哈希原理
+    散列表（Hash table，也叫哈希表），是根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。
+    
+    给定表M，存在函数f(key)，对任意给定的关键字值key，代入函数后若能得到包含该关键字的记录在表中的地址，则称表M为哈希(Hash）表，函数f(key)为哈希(Hash) 函数。
+    
+    三：哈希冲突解决
+    1.开放定址法  2.再哈希法 3.链地址法 4. 创建一个公共溢出区
