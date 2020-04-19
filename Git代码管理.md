@@ -22,7 +22,7 @@
 
 HEAD 它指向你最后一次提交的结果
 
-![截屏2020-04-08下午12.42.28.png](https://i.loli.net/2020/04/08/gycNbFq5k2LtAsj.png)
+![git-add.png](https://blogsimages.oss-cn-beijing.aliyuncs.com/images/git-add.png?Expires=1587268643&OSSAccessKeyId=TMP.3Kj81da92UjugyhziTrXvn1b2zZp5KjtNLWGSYQgHDPwC2pASocZxHpW6CPc5HwaJJypiJg5r78FLr4gRStLWJ2svQsHJk&Signature=0W43CZ5FWbwUlRC7gKmtQTZTWlc%3D)
 
 ### 添加和提交
 
@@ -56,7 +56,7 @@ HEAD 它指向你最后一次提交的结果
 
 分支是用来将特性开发绝缘开来的。在你创建仓库的时候，master是"默认的"分支。在其他分支上进行开发，完成后再将它们合并到主分支上。
 
-![branch.jpg](https://i.loli.net/2020/04/08/ET47oOPbjN3L9Wy.jpg)
+![branch.png](https://blogsimages.oss-cn-beijing.aliyuncs.com/images/branch.png?Expires=1587268681&OSSAccessKeyId=TMP.3Kj81da92UjugyhziTrXvn1b2zZp5KjtNLWGSYQgHDPwC2pASocZxHpW6CPc5HwaJJypiJg5r78FLr4gRStLWJ2svQsHJk&Signature=HhrqA6avzd8grsbHqaeU%2Ft88DoM%3D)
 
 创建一个叫做"feature_x"的分支，并切换过去：
 
