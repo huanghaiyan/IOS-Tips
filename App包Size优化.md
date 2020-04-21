@@ -39,6 +39,10 @@
 
   - 本地大图片都使用 webp。
 
+  - 使用Tint Color代替一部分普通和高亮状态的图片
+
+  - 统计页面使用率，删除低使用率的页面
+
 - 可执行文件优化
   - 代码优化。代码复用，禁止拷贝代码，共用代码下沉为底层组件；少用多行宏，多用函数封装；删除无用代码。
   - 第三方库优化。删除未使用的库，合理选择第三方库。
@@ -52,3 +56,11 @@
 - 苹果官方的策略
   - App Thinning ，使用 xcasset 管理图片。
   - 开启 BitCode
+
+- 迭代中的持续优化
+  - 每次提交代码，检查是否有图片资源的提交，检查改图片是否有使用。
+  - 每次代码提交，当有代码删除时，检查代码中是否使用到图片资源，提示删除对应图片资源。
+  - 每次打包时，统计包中的文件和动态库大小，超过指定大小值，发出警告。
+  - 每次打包，统计包中的未使用图片资源，需要有白名单功能。
+
+![ipa_volume_optimization.png](https://blogsimages.oss-cn-beijing.aliyuncs.com/images/ipa_volume_optimization.png?Expires=1587454805&OSSAccessKeyId=TMP.3KeDteDodKWxRgGyEcP4humZ1YSwFrkqAuYkyKrkegw7Gr1hxqdvv279RhXxZYEf3xN9nDimVF5esDPbGuJBEGPWTf6yh1&Signature=q%2FD%2BypzgKSkyBXmEes1k0qR2wzQ%3D)
