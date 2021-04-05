@@ -1,5 +1,5 @@
-##GCD多线程：信号量和条件锁
-###1.信号量 
+## GCD多线程：信号量和条件锁
+### 1.信号量 
 dispatch_semaphore_t  
 
 在NSOperation中，可以直接设置最大并发数来控制并发数量，在GCD中，控制并发数量由信号量来完成。
@@ -46,7 +46,7 @@ dispatch_semaphore_t
 	// 一开始执行到这里信号量为0，线程被阻塞，直到上述操作完成使信号量+1,线程解除阻塞
 	dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
 	
-###2.条件锁 
+### 2.条件锁 
 条件锁可以控制线程的执行次序，相当于NSOperation中的依赖关系
 	
 	/*     常见的锁：    
